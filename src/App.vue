@@ -12,13 +12,30 @@
   <!-- <p>test title</p>
 
   <h4>subheading title</h4> -->
+  <h1>CO2 emissions per capita of countries</h1>
 
-  <test-component></test-component>
+  <h1>Single number plot</h1>
+
+  <!-- <test-component></test-component> -->
+
+  <br>
+  <back-to-back-plot></back-to-back-plot>
+  
 </template>
 
-<script setup>
+<script>
+import BackToBackPlot from './components/BackToBackPlot.vue'
 import HelloWorld from './components/HelloWorld.vue'
 import TestComponent from "./components/TestComponent.vue"
+
+export default {
+  name: "App",
+  components: {
+    BackToBackPlot
+  }
+}
+
+
 
 
 
