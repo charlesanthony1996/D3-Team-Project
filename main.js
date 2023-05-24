@@ -13,8 +13,8 @@ async function drawChart () {
 
   const margin = { top: 30, bottom: 30, left: 30, right: 30}
 
-  const width = 560 - margin.left - margin.right
-  const height = 560 - margin.top - margin.bottom
+  const width = 460 - margin.left - margin.right
+  const height = 460 - margin.top - margin.bottom
 
   // loading the data
   // await to wait till the file is loaded for processing
