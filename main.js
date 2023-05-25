@@ -47,7 +47,9 @@ async function drawChart () {
   const x = d3.scaleLinear()
   .domain([0, d3.max(filteredData, d => +d.CO2_emission)]).nice()
   // .domain([d3.min(filteredData, d=> +d.CO2_emission), d3.max(filteredData, d => +d.CO2_emission)]).nice()
-  .range([0, width])
+  // mirroring the x axis along the y axis, the greater values should start at the left most point
+  // and should decrease as the move towards the right
+  .range([width, 0])
 
 
   // console.log(x)
@@ -66,19 +68,19 @@ async function drawChart () {
     .range([0, height])
     .padding(.1)
 
-
+  // this is not needed as the y axis from the second plot is the one being shared with both plots now -> Country 
   // y axis label
-  svg.append("text")
-  // country has to be vertical so rotation is needed
-  // -90 is in the first quadrant area
-  .attr("transform", "rotate(-90)")
-  .attr("y", 0 - margin.left - 70)
-  // position of the x value -> height/2 gives you the midpoint
-  .attr("x", 0 - (height / 2))
-  // increase the spacing from the vertical y axis
-  .attr("dy", "40px")
-  .style("text-anchor", "middle")
-  .text("Country")
+  // svg.append("text")
+  // // country has to be vertical so rotation is needed
+  // // -90 is in the first quadrant area
+  // .attr("transform", "rotate(-90)")
+  // .attr("y", 0 - margin.left - 70)
+  // // position of the x value -> height/2 gives you the midpoint
+  // .attr("x", 0 - (height / 2))
+  // // increase the spacing from the vertical y axis
+  // .attr("dy", "40px")
+  // .style("text-anchor", "middle")
+  // .text("Country")
 
 
   // x axis label
@@ -88,7 +90,9 @@ async function drawChart () {
   .text("CO2 Emissions in Metric Tons Per Capita/ MTPC (Per Person) in 1990")
 
   svg.append("g")
-    .call(d3.axisLeft(y))
+  // moving the y axis to the right end of the plot
+    .attr("transform", `translate(${width}, ${0})`)
+    .call(d3.axisRight(y))
 
   // plotting the bars
   svg.selectAll("myRect")
@@ -97,9 +101,13 @@ async function drawChart () {
     .data(filteredData)
     .enter()
     .append("rect")
-    .attr("x", x(0))
+    // x position is on the right end of the bar here
+    .attr("x", d=> x(+d.CO2_emission))
     .attr("y", d => y(d.Country_Name))
-    .attr("width", d => x(+d.CO2_emission))
+    // where the mirroring takes place
+    // this doesnt work
+    // .attr("width", d => width - x(+d.CO2_emission))
+    .attr("width", d=> width - x(+d.CO2_emission))
     .attr("height", y.bandwidth())
     .attr("fill", "grey")
 
@@ -107,6 +115,8 @@ async function drawChart () {
     // increase the font of the axis and y axis, numbers are too small
     // plot the second horizontal bar plot to the right for 2019
     // some interaction to switch between the countries and the regions available
+    // the y axis label is not needed from the first plot then, remove it
+    // both plots share a common y axis
 
     // testing
   // console.log(svg)
@@ -145,7 +155,7 @@ async function drawChart () {
   console.log(x2)
 
   svg.append("g")
-  .attr("transform", `translate(0,${height2}`)
+  .attr("transform", `translate(0,${height2})`)
   .call(d3.axisBottom(x2))
   // in log format? cos of the log values?
   // check whether the values less than 1 can be plotted with the big ones ranging to about 27 mtpc
@@ -159,9 +169,11 @@ async function drawChart () {
 
 
   // y axis label
+  // selected countries here
+  // make it change for regions as well if time permits?
   svg.append("text")
   .attr("transform", "rotate(-90)")
-  .attr("y", 0 - margin2.left - 70)
+  .attr("y", 0 - margin2.left - 100)
   .attr("x", 0 - (height2/2))
   .attr("dy", "40px")
   .style("text-anchor", "middle")
@@ -195,6 +207,10 @@ async function drawChart () {
 
   // todo
   // second has to be inverted from the y axis to get it into a back to back plot
+  // inversion is not yet done
+  // correction -> mirror the first plot along the y axis
+  // values of all axes are a bit small increase them
+  // single number plot with python file. get the stats working there and try to implement it here
 
 }
 
