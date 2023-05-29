@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>customizing the single number plot -> with animation</title>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="https://d3js.org/d3.v6.min.js"></script>
+
+    </head>
+
+    <body>
+        <h1>Total number of CO2 emissions globally</h1>
+        <svg id="dataviz" width="500" height="500"></svg>
+    </body>
+
+    <script>
+
+        var totalCO21990 = 0
+        var totalCO22019 = 0
+
+        // select the counter element
+        // var svg = d3.select("#dataviz")
+
+        // var text = svg.append("text")
+        // .attr("x", 250)
+        // .attr("y", 100)
+        // .attr("text-anchor", "middle")
+        // .style("font-size", "50px")
+        // .text(totalCO21990)
+
+
+        // init with the 1990 value
+        // counter.text(totalCO21990)
+
+        // loading the data and getting the individual sums for 1990 and 2019
+        d3.csv("./data/CO2_emission_wrangled.csv").then(function(data) {
+            data.forEach(function(d) {
+                if(d.Year == "1990") {
+                    totalCO21990 += +d.CO2_emission
+                    // console.log("1990 emissions: ", totalCO21990)
+                }
+                if(d.Year == "2019") {
+                    totalCO22019 += +d.CO2_emission
+                    // console.log("2019 emissions: ", totalCO22019)
+                }
+            })
+    
+
+        var svg = d3.select("#dataviz")
+
+        var circle = svg.append("circle")
+        .attr("cx", 250)
+        .attr("cy", 190)
+        .attr("r", 100)
+        .attr("stroke", "grey")
+        .attr("stroke-width", 10)
+        .attr("fill", "none")
+
+        // console.log(circle)
+
+
+        var text = svg.append("text")
+        .attr("x", 250)
+        .attr("y", 200)
+        .attr("text-anchor", "middle")
+        .style("font-size", "50px")
+        .text(totalCO21990.toFixed(2))
+
+        // console.log(text)
+
+        // additional text for the year
+        var yearText = svg.append("text")
+        .attr("x", 250)
+        .attr("y", 260)
+        .attr("text-anchor", "auto")
+        .attr("font-size", "50px")
+
+        // additional text for the year
+        var yearText = svg.append("text")
+        .attr("x", 250)
+        .attr("y", 80)
+        .attr("text-anchor", "middle")
+        .style("font-size", "30px")
+        // shade of grey?
+        .style("fill", "#333")
+        // font weight? font style?
+        .style("font-style", "bold")
+
+        // check current here switch?
+        // working?
+        // console.log(yearText)
+
+
+
+
+        // wait 2 seconds and then transition to 2019 value
+        // set timeout function only does it once
+        // we need a set interval
+        // setTimeout(function() {
+        //     text.transition()
+        //     .duration(3000)
+        //     .tween("text", function() {
+        //         var interpolator = d3.interpolateNumber(totalCO21990, totalCO22019)
+
+        //         return function(t) {
+        //             text.text((interpolator(t)).toFixed(2))
+        //         }
+        //     })
+        // }, 2000)
+
+        var currentYear = 1990
+        text.text(totalCO21990.toFixed(2))
+        yearText.text(`In ${currentYear}`)
+
+
+            setInterval(function() {
+                if(currentYear == 1990) {
+                    transition(text, totalCO21990, totalCO22019)
+                    currentYear = 2019
+                }
+                else {
+                    transition(text, totalCO22019, totalCO21990)
+                    currentYear = 1990
+                }
+                yearText.text(`In ${currentYear}`)
+            }, 5000)
+        })
+
+        
+        // transition function
+
+        function transition(textElement, startValue, endValue) {
+            textElement.transition()
+            .duration(4000)
+            .tween("text", function(){
+                var interpolator = d3.interpolateNumber(startValue, endValue)
+                return function(t) {
+                    textElement.text(interpolator(t).toFixed(2))
+                }
+            })
+
+        }
+
+
+    </script>
+
+    <style>
+
+
+    </style>
+</html>
