@@ -11,7 +11,7 @@ async function drawChart () {
   //   {name: 'D', value: 40}
   // ];
 
-  const margin = { top: 30, bottom: 30, left: 30, right: 30}
+  const margin = { top: 30, bottom: 50, left: 30, right: 30}
 
   const width = 560 - margin.left - margin.right
   const height = 560 - margin.top - margin.bottom
@@ -113,7 +113,7 @@ async function drawChart () {
     // .attr("width", d => width - x(+d.CO2_emission))
     .attr("width", d=> width - x(+d.CO2_emission))
     .attr("height", y.bandwidth())
-    .attr("fill", "grey")
+    .attr("fill", d => colorScale(d.Country_Name))
 
     // todo
     // increase the font of the axis and y axis, numbers are too small
@@ -128,7 +128,7 @@ async function drawChart () {
   //  ----------------------------
   // beginning of the second back to back plot
 
-  const margin2 = {top: 30, left: 30, right: 30, bottom: 30}
+  const margin2 = {top: 30, left: 30, right: 30, bottom: 50}
   
   const width2 = 560 - margin2.left - margin2.right
 
@@ -207,7 +207,7 @@ async function drawChart () {
   .attr("y", d=> y2(d.Country_Name))
   .attr("width", d => x2(+d.CO2_emission))
   .attr("height", y2.bandwidth())
-  .attr("fill", "grey")
+  .attr("fill", d => colorScale(d.Country_Name))
 
   // todo
   // second has to be inverted from the y axis to get it into a back to back plot
@@ -255,8 +255,25 @@ async function drawChart () {
     .style("font-size", "50px")
 
 
+    var yearText = svg.append("text")
+    .attr("x", 250)
+    .attr("y", 260)
+    .attr("text-anchor", "auto")
+    .attr("font-size", "200px")
+
+
+    yearText = svg.append("text")
+    .attr("x", 250)
+    .attr("y", 80)
+    .attr("text-anchor", "middle")
+    .style("fill", "black")
+    .style("font-style", "italic")
+    .style("color", "black")
+
+
     var currentYear = 1990
     text.text(totalCO21990.toFixed(2))
+    yearText.text(`In ${currentYear}`)
 
     setInterval(function() {
       if(currentYear == 1990) {
@@ -267,7 +284,8 @@ async function drawChart () {
         transition(text, totalCO22019, totalCO21990)
         currentYear = 1990
       }
-    
+      yearText.text(`In ${currentYear}`)
+
     }, 5000)
   })
 
