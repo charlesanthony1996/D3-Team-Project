@@ -4,20 +4,27 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/x-icon" href="./favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CO2 emissions in countries</title>
+    <title style="">CO2 emissions in countries</title>
     <title></title>
   </head>
+  
   <body>
     <div id="app">
-      <h2>Global average emissions at 1990 and 2019</h2>
+      <h2 style="justify-content: center;position: absolute;top: 100px;left: 900px;">Global average emissions at 1990 and 2019</h2>
       <p></p>
       <div id="viz"></div>
 
-      <h2>Back to back plot of countries/regions (including austria)</h2>
-      <p></p>
-      <div id="backtobackplot" style="position: absolute; left: 100px; top:250px;"></div>
+      <h2>Single number change for total CO2 emissions from 1990 to 2019</h2>
+      <!-- single number plot that shows the change in total co2 emissions in 1990 and 2019 -->
+      <!-- wheres the text at the top or bottom that says in 1990 and in 2019 -->
+      <div id="singlenumberplot" style="justify-content: center;position: absolute; top: 200px;"></div>
+
+      <br>
+      <h2 style="justify-content: center;position: absolute; top: 600px;">Back to back plot of countries/regions (including austria)</h2>
+      <div id="backtobackplot" style="justify-content: center;position: absolute; top: 650px;left: 500px;"></div>
+
       <!-- second plot at 2019 should be towards the right -->
-      <div id="backtobackplot2019" style="position: absolute; left: 700px; top:250px"></div>
+      <div id="backtobackplot2019" style="justify-content: center;position: absolute; top: 650px;right: 600px;"></div>
     </div>
   </body>
 

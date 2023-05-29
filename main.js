@@ -13,8 +13,8 @@ async function drawChart () {
 
   const margin = { top: 30, bottom: 30, left: 30, right: 30}
 
-  const width = 460 - margin.left - margin.right
-  const height = 460 - margin.top - margin.bottom
+  const width = 560 - margin.left - margin.right
+  const height = 560 - margin.top - margin.bottom
 
   // loading the data
   // await to wait till the file is loaded for processing
@@ -26,7 +26,11 @@ async function drawChart () {
   // the right one will be the 2019 year version
   // should one from every region be selected?
   // region based or country based?
-  const countries = ["United States", "Germany", "Austria", "India", "China", "Egypt"]
+  const countries = ["United States", "Germany", "Austria", "India", "China", "Nigeria", "Mexico", "United Arab Emirates", "Australia", "Maldives"]
+
+  // the color scale for the countries
+  const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
 
   // .data(filteredData)
   // not when the entire data set is needed
@@ -126,9 +130,9 @@ async function drawChart () {
 
   const margin2 = {top: 30, left: 30, right: 30, bottom: 30}
   
-  const width2 = 460 - margin2.left - margin2.right
+  const width2 = 560 - margin2.left - margin2.right
 
-  const height2 = 460 - margin2.top - margin2.bottom
+  const height2 = 560 - margin2.top - margin2.bottom
 
   // dataset has already been loaded at the top
   // console.log(data)
@@ -137,7 +141,7 @@ async function drawChart () {
   const countries_2 = ["United States", "Germany", "Austria", "India", "China", "Egypt"]
 
   // the year on the axis for this plot should be 2019
-  const filteredData2 = data.filter(d => countries_2.includes(d.Country_Name) && d.Year === "2019")
+  const filteredData2 = data.filter(d => countries.includes(d.Country_Name) && d.Year === "2019")
 
   // append the svg object to the div part of the html file
   var svg = d3.select("#backtobackplot2019")
@@ -212,6 +216,72 @@ async function drawChart () {
   // values of all axes are a bit small increase them
   // single number plot with python file. get the stats working there and try to implement it here
 
+
+
+  // single number plot begins here
+  var totalCO21990 = 0
+  var totalCO22019 = 0
+
+  d3.csv("./data/CO2_emission_wrangled.csv").then(function(data) {
+    data.forEach(function(d) {
+      if(d.Year == "1990")
+      {
+        totalCO21990 += +d.CO2_emission
+      }
+      if(d.Year == "2019")
+      {
+        totalCO22019 += +d.CO2_emission
+      }
+    })
+
+
+    var svg = d3.select("#singlenumberplot")
+    .append("svg")
+    .attr("width", 500)
+    .attr("height", 500)
+
+    var circle = svg.append("circle")
+    .attr("cx", 250)
+    .attr("cy", 190)
+    .attr("r", 100)
+    .attr("stroke", "grey")
+    .attr("stroke-width", 10)
+    .attr("fill", "none")
+
+    var text = svg.append("text")
+    .attr("x", 250)
+    .attr("y", 210)
+    .attr("text-anchor", "middle")
+    .style("font-size", "50px")
+
+
+    var currentYear = 1990
+    text.text(totalCO21990.toFixed(2))
+
+    setInterval(function() {
+      if(currentYear == 1990) {
+        transition(text, totalCO21990, totalCO22019)
+        currentYear = 2019
+      }
+      else{
+        transition(text, totalCO22019, totalCO21990)
+        currentYear = 1990
+      }
+    
+    }, 5000)
+  })
+
+
+  function transition(textElement, startValue, endValue) {
+    textElement.transition()
+    .duration(3000)
+    .tween("text", function() {
+      var interpolator = d3.interpolateNumber(startValue, endValue)
+      return function(t) {
+        textElement.text(interpolator(t).toFixed(2))
+      }
+    })
+  }
 }
 
 drawChart()
